@@ -25,6 +25,7 @@
     "jsx-a11y/anchor-is-valid": "warn",
     "jsx-a11y/label-has-associated-control": "off",
     "react/jsx-no-constructed-context-values": "warn",
+    "import/prefer-default-export": "off",
     "no-use-before-define": "off",
     "no-shadow": "off",
     "camelcase": "off",

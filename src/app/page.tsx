@@ -8,50 +8,48 @@ type UploadedImage = {
     name: string;
 };
 
+/* eslint-disable */
+
 export default function Home() {
     const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
     const [error, setError] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files || e.target.files.length === 0) {
-            setError('No files selected.');
-            return;
-        }
+        const { files } = e.target;
+        console.log('files', files);
+        if (files && files.length > 0) {
+            const formData = new FormData();
+            const imageFiles = Array.from(files);
+            console.log('imageFiles', imageFiles);
+            imageFiles.forEach((image) => {
+                formData.append('image', image);
+            });
 
-        setError(null);
-        const formData = new FormData();
+            formData.forEach((value, key) => {
+                console.log('key', key);
+                console.log('value', value);
+            });
 
-        formData.append('file', e.target.files[0]);
-
-        try {
-            const response = await fetch('/api/crop-image', {
+            const res = await fetch('/api/crop-images', {
                 method: 'POST',
                 body: formData,
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to process images');
+            if (res.ok) {
+                const data = await res.json();
+                const croppedImages = data.croppedImages.map((image: any) => ({
+                    src: URL.createObjectURL(
+                        new Blob([new Uint8Array(image.buffer.data)], {
+                            type: 'image/png',
+                        })
+                    ),
+                    name: image.name,
+                }));
+                setUploadedImages(croppedImages);
+            } else {
+                setError('Error cropping images');
             }
-
-            // Handle the response (assuming JSON response with image URLs or similar)
-            const processedImages = await response.json();
-            setUploadedImages(processedImages); // Update this line based on your response structure
-        } catch (error) {
-            setError('Error processing images.');
-        }
-    };
-
-    const testClick = async () => {
-        try {
-            const response = await fetch('/api/test', {
-                method: 'GET',
-            });
-
-            const processedImages = await response.json();
-            console.log(processedImages);
-        } catch (error) {
-            setError('Error processing images.');
         }
     };
 
@@ -93,9 +91,6 @@ export default function Home() {
             <div className="flex flex-wrap justify-center">
                 {renderImages()}
             </div>
-            <button type="button" onClick={testClick}>
-                Test
-            </button>
         </main>
     );
 }
