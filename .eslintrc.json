@@ -1,3 +1,66 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": [
+    "airbnb",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended",
+    "prettier"
+  ],
+  "plugins": ["@typescript-eslint", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "jsx-a11y/anchor-is-valid": "warn",
+    "jsx-a11y/label-has-associated-control": "off",
+    "react/jsx-no-constructed-context-values": "warn",
+    "no-use-before-define": "off",
+    "no-shadow": "off",
+    "camelcase": "off",
+    "no-useless-escape": "warn",
+    "react/react-in-jsx-scope": "off",
+    "prettier/prettier": "error",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".tsx"] }],
+    "react/jsx-props-no-spreading": "off",
+    "react/prop-types": "off",
+    "react/require-default-props": "off",
+    "react/no-array-index-key": "off",
+    "react/jsx-no-bind": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/newline-after-import": "warn",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      },
+      "alias": {
+        "map": [["@", "./src/app"]],
+        "extensions": [".ts", ".tsx", ".js"]
+      }
+    }
+  }
 }
