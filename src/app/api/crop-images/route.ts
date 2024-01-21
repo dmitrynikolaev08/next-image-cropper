@@ -17,6 +17,5 @@ export async function POST(req: Request) {
         })
     );
 
-    console.log('croppedImages', croppedImages);
     return new Response(JSON.stringify({ croppedImages }));
 }

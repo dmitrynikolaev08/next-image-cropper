@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useRef, useState, ChangeEvent } from 'react';
+import JSZip from 'jszip';
 
 type UploadedImage = {
     src: string;
@@ -53,6 +54,29 @@ export default function Home() {
         }
     };
 
+    const handleDownloadAll = async () => {
+        const zip = new JSZip();
+        const imageFolder = zip.folder('images');
+
+        await Promise.all(
+            uploadedImages.map(async (image, index) => {
+                const response = await fetch(image.src);
+                const blob = await response.blob();
+                const arrayBuffer = await blob.arrayBuffer();
+                imageFolder!.file(`${image.name}.png`, arrayBuffer);
+            })
+        );
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const url = window.URL.createObjectURL(zipBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'images.zip');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const triggerFileInput = () => {
         fileInputRef.current?.click();
     };
@@ -91,6 +115,13 @@ export default function Home() {
             <div className="flex flex-wrap justify-center">
                 {renderImages()}
             </div>
+            <button
+                type="button"
+                onClick={handleDownloadAll}
+                className="mb-4 px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600 transition duration-300"
+            >
+                Download All Images
+            </button>
         </main>
     );
 }
