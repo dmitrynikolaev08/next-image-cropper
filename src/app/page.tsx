@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { useRef, useState, ChangeEvent } from 'react';
 import JSZip from 'jszip';
 
@@ -8,8 +7,6 @@ type UploadedImage = {
     src: string;
     name: string;
 };
-
-/* eslint-disable */
 
 export default function Home() {
     const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
@@ -39,6 +36,7 @@ export default function Home() {
 
             if (res.ok) {
                 const data = await res.json();
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const croppedImages = data.croppedImages.map((image: any) => ({
                     src: URL.createObjectURL(
                         new Blob([new Uint8Array(image.buffer.data)], {
@@ -59,7 +57,7 @@ export default function Home() {
         const imageFolder = zip.folder('images');
 
         await Promise.all(
-            uploadedImages.map(async (image, index) => {
+            uploadedImages.map(async (image) => {
                 const response = await fetch(image.src);
                 const blob = await response.blob();
                 const arrayBuffer = await blob.arrayBuffer();
@@ -84,11 +82,10 @@ export default function Home() {
     const renderImages = () => {
         return uploadedImages.map((image, index) => (
             <div key={index} className="m-4">
-                <Image
+                <img
                     src={image.src}
-                    alt={`Uploaded image ${image.name}`}
-                    width={200}
-                    height={200}
+                    alt={image.name}
+                    className="h-auto w-auto"
                 />
             </div>
         ));
