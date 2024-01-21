@@ -52,14 +52,14 @@ export default function Home() {
 
     const handleDownloadAll = async () => {
         const zip = new JSZip();
-        const imageFolder = zip.folder('images');
+        const imageFolder = zip.folder('processed-images');
 
         await Promise.all(
             uploadedImages.map(async (image) => {
                 const response = await fetch(image.src);
                 const blob = await response.blob();
                 const arrayBuffer = await blob.arrayBuffer();
-                imageFolder!.file(`${image.name}.png`, arrayBuffer);
+                imageFolder!.file(image.name, arrayBuffer);
             })
         );
 
@@ -67,7 +67,7 @@ export default function Home() {
         const url = window.URL.createObjectURL(zipBlob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'images.zip');
+        link.setAttribute('download', 'processed-images.zip');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -121,8 +121,11 @@ export default function Home() {
             {uploadedImages?.length > 0 && (
                 <>
                     <span className="font-semibold text-lg mb-3 mt-6">
-                        {uploadedImages.length} images have been successfully
-                        processed!
+                        {uploadedImages.length}{' '}
+                        {uploadedImages.length === 1
+                            ? 'image has '
+                            : 'images have '}
+                        been successfully processed!
                     </span>
                     <button
                         type="button"
