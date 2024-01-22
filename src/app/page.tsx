@@ -24,6 +24,7 @@ export default function Home() {
             });
 
             setLoading(true);
+            setError(null);
 
             const res = await fetch('/api/crop-images', {
                 method: 'POST',
