@@ -72,6 +72,16 @@ export default function Home() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+
+        const imageNames = uploadedImages.map((image) => image.name);
+        await fetch('/api/delete-images', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ images: imageNames }),
+        });
+
         setUploadedImages([]);
     };
 
